@@ -258,7 +258,9 @@ class PageController extends Controller {
 		$response = new TemplateResponse($this->appName, 'index');
 		$csp = new ContentSecurityPolicy();
 		$csp->addAllowedConnectDomain('*');
-		$csp->addAllowedMediaDomain('blob:');
+//		$csp->addAllowedMediaDomain('blob:');
+		$csp->addAllowedMediaDomain('*');
+		$csp->addAllowedObjectDomain('*');
 		$response->setContentSecurityPolicy($csp);
 		return $response;
 	}
