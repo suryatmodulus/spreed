@@ -32,121 +32,127 @@ the main body of the message as well as a quote.
 		:class="{'hover': showActions && !isSystemMessage && !isDeletedMessage, 'system' : isSystemMessage}"
 		@mouseover="handleMouseover"
 		@mouseleave="handleMouseleave">
-		<div v-if="isFirstMessage && showAuthor"
-			class="message__author"
-			role="heading"
-			aria-level="4">
-			{{ actorDisplayName }}
-		</div>
-		<div
-			ref="messageMain"
-			class="message__main">
-			<div v-if="isSingleEmoji"
-				class="message__main__text">
-				<Quote v-if="parent" :parent-id="parent" v-bind="quote" />
-				<div class="single-emoji">
-					{{ message }}
+		<div>
+			<div v-if="isFirstMessage && showAuthor"
+				class="message__author"
+				role="heading"
+				aria-level="4">
+				{{ actorDisplayName }}
+			</div>
+			<div
+				ref="messageMain"
+				class="message__main">
+				<div v-if="isSingleEmoji"
+					class="message__main__text">
+					<Quote v-if="parent" :parent-id="parent" v-bind="quote" />
+					<div class="single-emoji">
+						{{ message }}
+					</div>
 				</div>
-			</div>
-			<div v-else-if="showJoinCallButton" class="message__main__text call-started">
-				<RichText :text="message" :arguments="richParameters" :autolink="true" />
-				<CallButton />
-			</div>
-			<div v-else-if="isDeletedMessage" class="message__main__text deleted-message">
-				<RichText :text="message" :arguments="richParameters" :autolink="true" />
-			</div>
-			<div v-else class="message__main__text" :class="{'system-message': isSystemMessage}">
-				<Quote v-if="parent" :parent-id="parent" v-bind="quote" />
-				<RichText :text="message" :arguments="richParameters" :autolink="true" />
-			</div>
-			<div v-if="!isDeletedMessage" class="message__main__right">
-				<span
-					v-tooltip.auto="messageDate"
-					class="date"
-					:style="{'visibility': hasDate ? 'visible' : 'hidden'}"
-					:class="{'date--self': showSentIcon}">{{ messageTime }}</span>
-				<!-- Message delivery status indicators -->
-				<div v-if="sendingFailure"
-					v-tooltip.auto="sendingErrorIconTooltip"
-					class="message-status sending-failed"
-					:class="{'retry-option': sendingErrorCanRetry}"
-					:aria-label="sendingErrorIconTooltip"
-					tabindex="0"
-					@mouseover="showReloadButton = true"
-					@focus="showReloadButton = true"
-					@mouseleave="showReloadButton = true"
-					@blur="showReloadButton = true">
-					<button
-						v-if="sendingErrorCanRetry && showReloadButton"
-						class="nc-button nc-button__main--dark"
-						@click="handleRetry">
-						<Reload
+				<div v-else-if="showJoinCallButton" class="message__main__text call-started">
+					<RichText :text="message" :arguments="richParameters" :autolink="true" />
+					<CallButton />
+				</div>
+				<div v-else-if="isDeletedMessage" class="message__main__text deleted-message">
+					<RichText :text="message" :arguments="richParameters" :autolink="true" />
+				</div>
+				<div v-else class="message__main__text" :class="{'system-message': isSystemMessage}">
+					<Quote v-if="parent" :parent-id="parent" v-bind="quote" />
+					<RichText :text="message" :arguments="richParameters" :autolink="true" />
+				</div>
+				<div v-if="!isDeletedMessage" class="message__main__right">
+					<span
+						v-tooltip.auto="messageDate"
+						class="date"
+						:style="{'visibility': hasDate ? 'visible' : 'hidden'}"
+						:class="{'date--self': showSentIcon}">{{ messageTime }}</span>
+					<!-- Message delivery status indicators -->
+					<div v-if="sendingFailure"
+						v-tooltip.auto="sendingErrorIconTooltip"
+						class="message-status sending-failed"
+						:class="{'retry-option': sendingErrorCanRetry}"
+						:aria-label="sendingErrorIconTooltip"
+						tabindex="0"
+						@mouseover="showReloadButton = true"
+						@focus="showReloadButton = true"
+						@mouseleave="showReloadButton = true"
+						@blur="showReloadButton = true">
+						<button
+							v-if="sendingErrorCanRetry && showReloadButton"
+							class="nc-button nc-button__main--dark"
+							@click="handleRetry">
+							<Reload
+								decorative
+								title=""
+								:size="16" />
+						</button>
+						<AlertCircle v-else
 							decorative
 							title=""
 							:size="16" />
-					</button>
-					<AlertCircle v-else
-						decorative
-						title=""
-						:size="16" />
-				</div>
-				<div v-else-if="isTemporary && !isTemporaryUpload || isDeleting"
-					v-tooltip.auto="loadingIconTooltip"
-					class="icon-loading-small message-status"
-					:aria-label="loadingIconTooltip" />
-				<div v-else-if="showCommonReadIcon"
-					v-tooltip.auto="commonReadIconTooltip"
-					class="message-status"
-					:aria-label="commonReadIconTooltip">
-					<CheckAll decorative
-						title=""
-						:size="16" />
-				</div>
-				<div v-else-if="showSentIcon"
-					v-tooltip.auto="sentIconTooltip"
-					class="message-status"
-					:aria-label="sentIconTooltip">
-					<Check decorative
-						title=""
-						:size="16" />
-				</div>
-				<!-- Message Actions -->
-				<Actions
-					v-show="showActions && hasActions"
-					class="message__main__right__actions"
-					:class="{ 'tall' : isTallEnough }">
-					<ActionButton
-						v-if="isReplyable"
-						icon="icon-reply"
-						:close-after-click="true"
-						@click.stop="handleReply">
-						{{ t('spreed', 'Reply') }}
-					</ActionButton>
-					<ActionButton
-						v-if="isPrivateReplyable"
-						icon="icon-user"
-						:close-after-click="true"
-						@click.stop="handlePrivateReply">
-						{{ t('spreed', 'Reply privately') }}
-					</ActionButton>
-					<template
-						v-for="action in messageActions">
+					</div>
+					<div v-else-if="isTemporary && !isTemporaryUpload || isDeleting"
+						v-tooltip.auto="loadingIconTooltip"
+						class="icon-loading-small message-status"
+						:aria-label="loadingIconTooltip" />
+					<div v-else-if="showCommonReadIcon"
+						v-tooltip.auto="commonReadIconTooltip"
+						class="message-status"
+						:aria-label="commonReadIconTooltip">
+						<CheckAll decorative
+							title=""
+							:size="16" />
+					</div>
+					<div v-else-if="showSentIcon"
+						v-tooltip.auto="sentIconTooltip"
+						class="message-status"
+						:aria-label="sentIconTooltip">
+						<Check decorative
+							title=""
+							:size="16" />
+					</div>
+					<!-- Message Actions -->
+					<Actions
+						v-show="showActions && hasActions"
+						class="message__main__right__actions"
+						:class="{ 'tall' : isTallEnough }">
 						<ActionButton
-							:key="action.label"
-							:icon="action.icon"
+							v-if="isReplyable"
+							icon="icon-reply"
 							:close-after-click="true"
-							@click="action.callback(messageAPIData)">
-							{{ action.label }}
+							@click.stop="handleReply">
+							{{ t('spreed', 'Reply') }}
 						</ActionButton>
-					</template>
-					<ActionButton
-						v-if="isDeleteable"
-						icon="icon-delete"
-						:close-after-click="true"
-						@click.stop="handleDelete">
-						{{ t('spreed', 'Delete') }}
-					</ActionButton>
-				</Actions>
+						<ActionButton
+							v-if="isPrivateReplyable"
+							icon="icon-user"
+							:close-after-click="true"
+							@click.stop="handlePrivateReply">
+							{{ t('spreed', 'Reply privately') }}
+						</ActionButton>
+						<template
+							v-for="action in messageActions">
+							<ActionButton
+								:key="action.label"
+								:icon="action.icon"
+								:close-after-click="true"
+								@click="action.callback(messageAPIData)">
+								{{ action.label }}
+							</ActionButton>
+						</template>
+						<ActionButton
+							v-if="isDeleteable"
+							icon="icon-delete"
+							:close-after-click="true"
+							@click.stop="handleDelete">
+							{{ t('spreed', 'Delete') }}
+						</ActionButton>
+					</Actions>
+				</div>
+			</div>
+			<div v-if="lastReadMessage === id"
+				class="new-message-marker">
+				<span>{{ t('spreed', 'New messages') }}</span>
 			</div>
 		</div>
 	</li>
@@ -315,6 +321,14 @@ export default {
 		sendingFailure: {
 			type: String,
 			default: '',
+		},
+
+		/**
+		 * Id of the last read message when the chat was opened
+		 */
+		lastReadMessage: {
+			type: Number,
+			default: 0,
 		},
 	},
 
@@ -742,6 +756,18 @@ export default {
 	0% { background-color: var(--color-background-hover); }
 	50% { background-color: var(--color-background-hover); }
 	100% { background-color: rgba(var(--color-background-hover), 0); }
+}
+
+.new-message-marker {
+	margin: 20px 0;
+	text-align: center;
+
+	span {
+		background-color: var(--color-primary-light);
+		color: var(--color-text-lighter);
+		padding: 10px  20px;
+		border-radius: var(--border-radius);
+	}
 }
 
 .message-status {
