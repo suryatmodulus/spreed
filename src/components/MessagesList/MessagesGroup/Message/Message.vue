@@ -61,7 +61,7 @@ the main body of the message as well as a quote.
 					v-tooltip.auto="messageDate"
 					class="date"
 					:style="{'visibility': hasDate ? 'visible' : 'hidden'}"
-					:class="{'date--self': showSentIcon}">{{ messageTime }}</span>
+					:class="{'date--self': showSentIcon}">{{ messageTime }} - {{ isPinned }}</span>
 				<!-- Message delivery status indicators -->
 				<div v-if="isTemporary && !isTemporaryUpload"
 					v-tooltip.auto="loadingIconTooltip"
@@ -94,6 +94,13 @@ the main body of the message as well as a quote.
 						:close-after-click="true"
 						@click.stop="handleReply">
 						{{ t('spreed', 'Reply') }}
+					</ActionButton>
+					<ActionButton
+						v-if="showModerationOptions"
+						icon="icon-star"
+						:close-after-click="true"
+						@click.stop="togglePin">
+						{{ t('spreed', 'Pin') }}
 					</ActionButton>
 				</Actions>
 			</div>
@@ -242,6 +249,13 @@ export default {
 			type: Number,
 			default: 0,
 		},
+		/**
+		 * Specifies if the message is pinned
+		 */
+		isPinned: {
+			type: Boolean,
+			required: true,
+		},
 	},
 
 	data() {
@@ -374,6 +388,26 @@ export default {
 			return t('spreed', 'Message read by everyone who shares their reading status')
 		},
 
+		showModerationOptions() {
+			return this.isOneToOneConversation || this.canModerate
+		},
+
+		canModerate() {
+			return this.canFullModerate || this.participantType === PARTICIPANT.TYPE.GUEST_MODERATOR
+		},
+
+		canFullModerate() {
+			return this.participantType === PARTICIPANT.TYPE.OWNER || this.participantType === PARTICIPANT.TYPE.MODERATOR
+		},
+
+		participantType() {
+			return this.conversation.participantType
+		},
+
+		isOneToOneConversation() {
+			return this.conversation.type === CONVERSATION.TYPE.ONE_TO_ONE
+		},
+
 	},
 
 	watch: {
@@ -424,6 +458,12 @@ export default {
 				token: this.token,
 			})
 			EventBus.$emit('focusChatInput')
+		},
+		togglePin() {
+			this.$store.dispatch('togglePinned', {
+				id: this.id,
+				token: this.token,
+			})
 		},
 		handleDelete() {
 			this.$store.dispatch('deleteMessage', this.message)

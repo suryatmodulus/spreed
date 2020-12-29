@@ -146,6 +146,15 @@ const mutations = {
 	setLastKnownMessageId(state, { token, id }) {
 		Vue.set(state.lastKnown, token, id)
 	},
+
+	/**
+	 * @param {object} state current store state;
+	 * @param {string} token Token of the conversation
+	 * @param {string} id Id of the last known chat message
+	 */
+	togglePinned(state, { token, id }) {
+		Vue.set(state.messages[token][id].isPinned = !state.messages[token][id].isPinned)
+	},
 }
 
 const actions = {
@@ -215,6 +224,15 @@ const actions = {
 	 */
 	setLastKnownMessageId(context, { token, id }) {
 		context.commit('setLastKnownMessageId', { token, id })
+	},
+
+	/**
+	 * @param {object} context default store context;
+	 * @param {string} token Token of the conversation
+	 * @param {string} id Id of the last known chat message
+	 */
+	togglePinned(context, { token, id }) {
+		context.commit('togglePinned', { token, id })
 	},
 }
 
