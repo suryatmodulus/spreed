@@ -96,7 +96,6 @@ the main body of the message as well as a quote.
 						{{ t('spreed', 'Reply') }}
 					</ActionButton>
 					<ActionButton
-						v-if="showModerationOptions"
 						icon="icon-star"
 						:close-after-click="true"
 						@click.stop="togglePin">
@@ -387,27 +386,6 @@ export default {
 		commonReadIconTooltip() {
 			return t('spreed', 'Message read by everyone who shares their reading status')
 		},
-
-		showModerationOptions() {
-			return this.isOneToOneConversation || this.canModerate
-		},
-
-		canModerate() {
-			return this.canFullModerate || this.participantType === PARTICIPANT.TYPE.GUEST_MODERATOR
-		},
-
-		canFullModerate() {
-			return this.participantType === PARTICIPANT.TYPE.OWNER || this.participantType === PARTICIPANT.TYPE.MODERATOR
-		},
-
-		participantType() {
-			return this.conversation.participantType
-		},
-
-		isOneToOneConversation() {
-			return this.conversation.type === CONVERSATION.TYPE.ONE_TO_ONE
-		},
-
 	},
 
 	watch: {
