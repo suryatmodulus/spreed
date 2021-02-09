@@ -21,6 +21,13 @@
 
 <template>
 	<div class="top-bar" :class="{ 'in-call': isInCall }">
+		<Button color="primary" type="text">
+			<MicrophoneOff
+				slot="icon"
+				:size="16"
+				decorative
+				title="" />
+		</Button>
 		<CallButton class="top-bar__button" />
 		<!-- Call layout switcher -->
 		<Actions slot="trigger" class="forced-background">
@@ -28,7 +35,7 @@
 				:icon="changeViewIconClass"
 				@click="changeView">
 				{{ changeViewText }}
-			</actionbutton>
+			</ActionButton>
 		</Actions>
 		<!-- sidebar toggle -->
 		<Actions
@@ -115,6 +122,7 @@ import { CONVERSATION, PARTICIPANT } from '../../constants'
 import { generateUrl } from '@nextcloud/router'
 import { callParticipantCollection } from '../../utils/webrtc/index'
 import { emit } from '@nextcloud/event-bus'
+import Button from '@nextcloud/vue/dist/Components/Button'
 
 export default {
 	name: 'TopBar',
@@ -126,6 +134,7 @@ export default {
 		CallButton,
 		ActionSeparator,
 		MicrophoneOff,
+		Button,
 	},
 
 	props: {
