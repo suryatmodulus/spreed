@@ -106,6 +106,14 @@ const mutations = {
 	setConversationDescription(state, { token, description }) {
 		Vue.set(state.conversations[token], 'description', description)
 	},
+
+	updateConversationLastReadMessage(state, { token, lastReadMessage }) {
+		Vue.set(state.conversations[token], 'lastReadMessage', lastReadMessage)
+	},
+
+	updateConversationLastMessage(state, { token, lastMessage }) {
+		Vue.set(state.conversations[token], 'lastMessage', lastMessage)
+	},
 }
 
 const actions = {
@@ -313,6 +321,14 @@ const actions = {
 		conversation.lastActivity = (new Date().getTime()) / 1000
 
 		commit('addConversation', conversation)
+	},
+
+	async updateConversationLastMessage({ commit }, { token, lastMessage }) {
+		commit('updateConversationLastMessage', { token, lastMessage })
+	},
+
+	async updateConversationLastReadMessage({ commit }, { token, lastReadMessage }) {
+		commit('updateConversationLastReadMessage', { token, lastReadMessage })
 	},
 }
 
