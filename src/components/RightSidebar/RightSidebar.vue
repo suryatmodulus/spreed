@@ -53,7 +53,7 @@
 			:order="1"
 			:name="t('spreed', 'Chat')"
 			icon="icon-comment">
-			<ChatView :token="token" />
+			<ChatView :token="token" :is-visible="opened" />
 		</AppSidebarTab>
 		<AppSidebarTab v-if="getUserId"
 			id="participants"

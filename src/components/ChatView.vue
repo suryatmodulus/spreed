@@ -47,6 +47,7 @@
 			:aria-label="t('spreed', 'Conversation messages')"
 			:is-chat-scrolled-to-bottom="isChatScrolledToBottom"
 			:token="token"
+			:is-visible="isVisible"
 			@setChatScrolledToBottom="setScrollStatus" />
 		<NewMessageForm
 			role="region"
@@ -74,6 +75,11 @@ export default {
 		token: {
 			type: String,
 			required: true,
+		},
+
+		isVisible: {
+			type: Boolean,
+			default: true,
 		},
 	},
 
